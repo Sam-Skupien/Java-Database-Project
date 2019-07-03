@@ -1,105 +1,186 @@
--- Craig Donato & Sam Skupien Phase 1
+-- Project phase 1
+-- Craig Donato - crd69
+-- Sam Skupien - sss78
 
-DROP TABLE Store;
-DROP TABLE Coffee;
-DROP TABLE Promotion;
-DROP TABLE MemberLevel;
-DROP TABLE Customer;
-DROP TABLE Purchase;
-DROP TABLE OfferCoffee;
-DROP TABLE HasPromotion;
-DROP TABLE PromoteFor;
-DROP TABLE BuyCoffee;
+-- BoutiqueCoffee database
 
+-- drop table statements
+-- ------------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS Store CASCADE;
+DROP TABLE IF EXISTS Coffee CASCADE;
+DROP TABLE IF EXISTS Promotion CASCADE;
+DROP TABLE IF EXISTS MemberLevel CASCADE;
+DROP TABLE IF EXISTS Customer CASCADE;
+DROP TABLE IF EXISTS Purchase CASCADE;
+DROP TABLE IF EXISTS OfferCoffee CASCADE;
+DROP TABLE IF EXISTS HasPromotion CASCADE;
+DROP TABLE IF EXISTS PromoteFor CASCADE;
+DROP TABLE IF EXISTS BuyCoffee CASCADE;
+-- ------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE Store
-( Store_ID     SERIAL,
-  Name         VARCHAR(20),
-  Address      VARCHAR(20),
-  Store_Type   VARCHAR(20),
-  GPS_Long     FLOAT,
-  GPS_Lat      FLOAT,
-  CONSTRAINT Store_PK PRIMARY KEY (Store_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table STORE
+-- Primary Key - Store_ID
+-- Foreign Key - none
+-- Alt Key     - Name
+-- Assumptions - All store names will be unique to the each chain of the BoutiqueCoffee chain.
+--             - Store types will be either a Kiosk, Cafe, or Hangout.
+--             - Address, Store_Type, GPS_Long, and GPS_Lat may be left null if a shop is in the middle of
+--               construction.
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Store(
+    Store_ID     SERIAL NOT NULL,
+    Name         VARCHAR(20) NOT NULL,
+    Address      VARCHAR(20),
+    Store_Type   VARCHAR(20),
+    GPS_Long     FLOAT,
+    GPS_Lat      FLOAT,
+    CONSTRAINT Store_PK PRIMARY KEY (Store_ID),
+    CONSTRAINT Store_AK UNIQUE (Name)
 );
 
-CREATE TABLE Coffee
-( Coffee_ID     SERIAL,
-  Name          VARCHAR(20),
-  Description   VARCHAR(20),
-  Intensity     INTEGER,
-  Price         FLOAT,
-  Reward_Points FLOAT,
-  Redeem_Points FLOAT,
-  CONSTRAINT Coffee_PK PRIMARY KEY (Coffee_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table COFFEE
+-- Primary Key - Coffee_ID
+-- Foreign Key - none
+-- Alt Key     - Name
+-- Assumptions - All coffees must have a unique name.
+--             - The price of a cup coffee can not be less then $1.50.
+--             - The price of a cup coffee will default to $1.50.
+--             - The price can not be null.
+--             - The intensity will default to 0 and can not be less then 0. 0 indicates it needs updated
+--             - The intensity can not be null.
+--             - The reward points can not be more then 10% of its redeem points
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Coffee(
+    Coffee_ID     SERIAL NOT NULL,
+    Name          VARCHAR(20) NOT NULL,
+    Description   VARCHAR(20),
+    Intensity     INTEGER DEFAULT ( 0 ) NOT NULL,
+    Price         FLOAT DEFAULT ( 1.50 ) NOT NULL,
+    Reward_Points FLOAT,
+    Redeem_Points FLOAT,
+    CONSTRAINT Coffee_PK PRIMARY KEY (Coffee_ID),
+    CONSTRAINT Coffee_AK UNIQUE (Name),
+    CONSTRAINT Coffee_CHK_Price CHECK ( Price >= 1.50 ),
+    CONSTRAINT Coffee_CHK_Intensity CHECK ( Intensity >= 0 ),
+    CONSTRAINT Coffee_CHK_Reward CHECK ( Reward_Points <= Redeem_Points * 0.10 )
 );
 
-CREATE TABLE Promotion
-( Promotion_ID  SERIAL,
-  Name          VARCHAR(20),
-  Start_Date    date,
-  End_Date      date,
-  CONSTRAINT Promotion_PK PRIMARY KEY (Promotion_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table PROMOTION
+-- Primary Key - Promotion_ID
+-- Foreign Key - none
+-- Assumptions - The end date can not be before the start date
+--             - A promotion must have a start and end date
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Promotion(
+    Promotion_ID  SERIAL NOT NULL,
+    Name          VARCHAR(20),
+    Start_Date    date NOT NULL,
+    End_Date      date NOT NULL,
+    CONSTRAINT Promotion_PK PRIMARY KEY (Promotion_ID),
+    CONSTRAINT Promotion_CHK_EndDate CHECK ( End_Date > Start_Date )
 );
 
-CREATE TABLE MemberLevel
-( MemberLevel_ID    SERIAL,
-  Name              VARCHAR(20),
-  Booster_Factor    float,
-  CONSTRAINT MemberLevel_PK PRIMARY KEY (MemberLevel_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table MEMBERLEVEL
+-- Primary Key - MemberLevel_ID
+-- Foreign Key - none
+-- Assumptions - A members booster factor can not be less then 0.00.
+--             - A booster factor will default to 0.00.
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS MemberLevel(
+    MemberLevel_ID    SERIAL NOT NULL,
+    Name              VARCHAR(20),
+    Booster_Factor    float DEFAULT ( 0.00 ),
+    CONSTRAINT MemberLevel_PK PRIMARY KEY (MemberLevel_ID),
+    CONSTRAINT MemberLevel_CHK_BF CHECK ( Booster_Factor >= 0 )
 );
 
-CREATE TABLE Customer
-( Customer_ID        SERIAL,
-  First_Name         VARCHAR(20),
-  Last_Name          VARCHAR(20),
-  Email              VARCHAR(20),
-  MemberLevel_ID     SERIAL,
-  Total_Points       FLOAT,
-  CONSTRAINT Customer_PK PRIMARY KEY (Customer_ID),
-  CONSTRAINT Customer_FK FOREIGN KEY (MemberLevel_ID)
-  REFERENCES MemberLevel (MemberLevel_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table CUSTOMER
+-- Primary Key - Customer_ID
+-- Foreign Key - MemberLevel_ID references MEMBERLEVEL table MemberLevel_ID
+-- Assumptions - Customer first and last names must be entered.
+--             - MemberLevel_ID will default to 1.
+--             - The total_points can not be less then 0 and will default to 0.
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Customer(
+    Customer_ID        SERIAL NOT NULL,
+    First_Name         VARCHAR(20) NOT NULL,
+    Last_Name          VARCHAR(20) NOT NULL,
+    Email              VARCHAR(20),
+    MemberLevel_ID     INTEGER DEFAULT ( 1 ),
+    Total_Points       FLOAT DEFAULT ( 0.00 ),
+    CONSTRAINT Customer_PK PRIMARY KEY (Customer_ID),
+    CONSTRAINT Customer_FK FOREIGN KEY (MemberLevel_ID) REFERENCES MemberLevel (MemberLevel_ID),
+    CONSTRAINT Customer_CHK_Points CHECK ( Total_Points >= 0 )
 );
 
-CREATE TABLE Purchase
-( Purchase_ID       SERIAL,
-  Customer_ID       SERIAL,
-  Store_ID          SERIAL,
-  Purchase_Time     date,
-  CONSTRAINT Purchase_PK PRIMARY KEY (Purchase_ID),
-  FOREIGN KEY (Customer_ID) REFERENCES Customer (Customer_ID),
-  FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table PURCHASE
+-- Primary Key - Purchase_ID
+-- Foreign Key - 1. Customer_ID references CUSTOMER table Customer_ID
+--             - 2. Store_ID references STORE table Store_ID
+-- Assumptions - The purchase time will default to the current database system timestamp
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Purchase(
+    Purchase_ID       SERIAL NOT NULL,
+    Customer_ID       INTEGER,
+    Store_ID          INTEGER,
+    Purchase_Time     date DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT Purchase_PK PRIMARY KEY (Purchase_ID),
+    CONSTRAINT Purchase_FK_1 FOREIGN KEY (Customer_ID) REFERENCES Customer (Customer_ID),
+    CONSTRAINT Purchase_FK_2 FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID)
 );
 
-CREATE TABLE OfferCoffee
-( Store_ID     SERIAL,
-  Coffee_ID    SERIAL,
-  CONSTRAINT OfferCoffee_PK PRIMARY KEY (Store_ID, Coffee_ID),
-  FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID),
-  FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table OFFERCOFFEE
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS OfferCoffee(
+    Store_ID     INTEGER NOT NULL,
+    Coffee_ID    INTEGER NOT NULL,
+    CONSTRAINT OfferCoffee_PK PRIMARY KEY (Store_ID, Coffee_ID),
+    CONSTRAINT OfferCoffee_FK_1 FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID),
+    CONSTRAINT OfferFoffee_FK_2 FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
 );
 
-CREATE TABLE HasPromotion
-( Store_ID      SERIAL,
-  Promotion_ID  SERIAL,
-  CONSTRAINT HasPromotion_PK PRIMARY KEY (Store_ID, Promotion_ID),
-  FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID),
-  FOREIGN KEY (Promotion_ID) REFERENCES Promotion (Promotion_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table HASPROMOTION
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS HasPromotion(
+    Store_ID      INTEGER NOT NULL,
+    Promotion_ID  INTEGER NOT NULL,
+    CONSTRAINT HasPromotion_PK PRIMARY KEY (Store_ID, Promotion_ID),
+    CONSTRAINT HasPromotion_FK_1 FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID),
+    CONSTRAINT HasPromotion_FK_2 FOREIGN KEY (Promotion_ID) REFERENCES Promotion (Promotion_ID)
 );
 
-CREATE TABLE PromoteFor
-( Promotion_ID   SERIAL,
-  Coffee_ID      SERIAL,
-  CONSTRAINT PromoteFor_PK PRIMARY KEY (Promotion_ID, Coffee_ID),
-  FOREIGN KEY (Promotion_ID) REFERENCES Promotion (Promotion_ID),
-  FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table PROMOTEFOR
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS PromoteFor(
+    Promotion_ID   INTEGER NOT NULL,
+    Coffee_ID      INTEGER NOT NULL,
+    CONSTRAINT PromoteFor_PK PRIMARY KEY (Promotion_ID, Coffee_ID),
+    CONSTRAINT PromoteFor_FK_1 FOREIGN KEY (Promotion_ID) REFERENCES Promotion (Promotion_ID),
+    CONSTRAINT PromoteFor_FK_2 FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
 );
 
-CREATE TABLE BuyCoffee
-( Purchase_ID         SERIAL,
-  Coffee_ID           SERIAL,
-  Purchase_Quantity   INTEGER,
-  Redeem_Quantity     INTEGER,
-  CONSTRAINT BuyCoffee_PK PRIMARY KEY (Purchase_ID, Coffee_ID),
-  FOREIGN KEY (Purchase_ID) REFERENCES Purchase (Purchase_ID),
-  FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
+-- ------------------------------------------------------------------------------------------------------------------
+-- Table BUYCOFFEE
+-- ------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS BuyCoffee(
+    Purchase_ID         INTEGER NOT NULL,
+    Coffee_ID           INTEGER NOT NULL,
+    Purchase_Quantity   INTEGER,
+    Redeem_Quantity     INTEGER,
+    CONSTRAINT BuyCoffee_PK PRIMARY KEY (Purchase_ID, Coffee_ID),
+    CONSTRAINT BuyCoffee_FK_1 FOREIGN KEY (Purchase_ID) REFERENCES Purchase (Purchase_ID),
+    CONSTRAINT BuyCoffee_FK_2 FOREIGN KEY (Coffee_ID) REFERENCES Coffee (Coffee_ID)
 );
+-- ------------------------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------------------------
+
