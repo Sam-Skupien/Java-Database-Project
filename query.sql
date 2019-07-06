@@ -88,5 +88,17 @@ insert into offercoffee values (3, 5);
 
 -- ------------------------------------------------------------------------------------------------------------------
 
+-- Test inserts for view with trigger for purchases
+-- ------------------------------------------------------------------------------------------------------------------
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
+values (1, 3, 5, 1, 0)
 
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
+values (2, 3, 1, 2, 0)
 
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
+values (20, 1, 2, 1, 0)
+
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
+values (10, 2, 2, 1, 0)
+-- ------------------------------------------------------------------------------------------------------------------
