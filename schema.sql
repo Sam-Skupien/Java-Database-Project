@@ -1,4 +1,5 @@
 -- Project phase 1
+-- schema
 -- Craig Donato - crd69
 -- Sam Skupien - sss78
 
@@ -24,7 +25,6 @@ DROP TABLE IF EXISTS BuyCoffee CASCADE;
 -- Foreign Key - none
 -- Alt Key     - Name
 -- Assumptions - All store names will be unique to the each chain of the BoutiqueCoffee chain.
---             - Store types will be either a Kiosk, Cafe, or Hangout.
 --             - Address, Store_Type, GPS_Long, and GPS_Lat may be left null if a shop is in the middle of
 --               construction.
 -- ------------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS Store(
 --             - The price of a cup coffee can not be less then $1.50.
 --             - The price of a cup coffee will default to $1.50.
 --             - The price can not be null.
---             - The intensity will default to 0 and can not be less then 0. 0 indicates it needs updated
+--             - The intensity will default to 0 and can not be less then 0. (0 indicates it needs updated)
 --             - The intensity can not be null.
 --             - The reward points can not be more then 10% of its redeem points
 -- ------------------------------------------------------------------------------------------------------------------
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS Purchase(
     Purchase_ID       SERIAL NOT NULL,
     Customer_ID       INTEGER,
     Store_ID          INTEGER,
-    Purchase_Time     date DEFAULT CURRENT_TIMESTAMP,
+    Purchase_Time     timestamp DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT Purchase_PK PRIMARY KEY (Purchase_ID),
     CONSTRAINT Purchase_FK_1 FOREIGN KEY (Customer_ID) REFERENCES Customer (Customer_ID),
     CONSTRAINT Purchase_FK_2 FOREIGN KEY (Store_ID) REFERENCES Store (Store_ID)
@@ -137,6 +137,10 @@ CREATE TABLE IF NOT EXISTS Purchase(
 
 -- ------------------------------------------------------------------------------------------------------------------
 -- Table OFFERCOFFEE
+-- Primary Key - (Store_ID, Coffee_ID)
+-- Foreign Key - 1. Store_ID references STORE table Store_ID
+--             - 2. Coffee_ID references COFFEE table Coffee_ID
+-- Assumptions - this is a table to link coffee being sold to a store.
 -- ------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS OfferCoffee(
     Store_ID     INTEGER NOT NULL,
@@ -148,6 +152,10 @@ CREATE TABLE IF NOT EXISTS OfferCoffee(
 
 -- ------------------------------------------------------------------------------------------------------------------
 -- Table HASPROMOTION
+-- Primary Key - (Store_ID, Promotion_ID)
+-- Foreign Key - 1. Store_ID references STORE table Store_ID
+--             - 2. Promotion_ID refernces PROMOTION table Promotion_ID
+-- Assumptions - this table links promotions available to a store.
 -- ------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS HasPromotion(
     Store_ID      INTEGER NOT NULL,
@@ -159,6 +167,10 @@ CREATE TABLE IF NOT EXISTS HasPromotion(
 
 -- ------------------------------------------------------------------------------------------------------------------
 -- Table PROMOTEFOR
+-- Primary Key - (Promotion_ID, Coffee_ID)
+-- Foreign Key - 1. Promotion_ID references PROMOTION table Promotion_ID
+--             - 2. Coffee_ID references COFFEE table Coffee_ID
+-- Assumptions - this table just links specific coffee to available coffees.
 -- ------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS PromoteFor(
     Promotion_ID   INTEGER NOT NULL,
@@ -170,6 +182,10 @@ CREATE TABLE IF NOT EXISTS PromoteFor(
 
 -- ------------------------------------------------------------------------------------------------------------------
 -- Table BUYCOFFEE
+-- Primary Key - (Purchase_ID, Coffee_ID)
+-- Foreign Key - 1. Purchase_ID references PURCHASE table Purchase_ID
+--             - 2. Coffee_ID references COFFEE table Coffee_ID
+-- Assumptions -
 -- ------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS BuyCoffee(
     Purchase_ID         INTEGER NOT NULL,
@@ -183,4 +199,5 @@ CREATE TABLE IF NOT EXISTS BuyCoffee(
 -- ------------------------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------------------------
+
 
