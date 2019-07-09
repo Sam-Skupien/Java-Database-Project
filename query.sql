@@ -5,9 +5,6 @@
 
 -- BoutiqueCoffee database
 
--- Table inserts
-
-
 -- STORE table inserts
 -- ------------------------------------------------------------------------------------------------------------------
 insert into store (name, address, store_type, gps_long, gps_lat)
@@ -20,11 +17,11 @@ values ('Caffeine Champion', '1024 Bearing Road', 'Hangout', 179.427242, 55.9538
 
 -- MEMBERLEVEL table inserts
 -- ------------------------------------------------------------------------------------------------------------------
-insert into memberlevel (name, booster_factor) values ('Steel', 0.00);
-insert into memberlevel (name, booster_factor) values ('Bronze', 0.05);
-insert into memberlevel (name, booster_factor) values ('Silver', 0.10);
-insert into memberlevel (name, booster_factor) values ('Gold', 0.15);
-insert into memberlevel (name, booster_factor) values ('Employee', 0.20);
+insert into memberlevel (name, booster_factor) values ('Steel', 0.10);
+insert into memberlevel (name, booster_factor) values ('Bronze', 0.20);
+insert into memberlevel (name, booster_factor) values ('Silver', 0.30);
+insert into memberlevel (name, booster_factor) values ('Gold', 0.40);
+insert into memberlevel (name, booster_factor) values ('Employee', 0.50);
 -- ------------------------------------------------------------------------------------------------------------------
 
 -- CUSTOMER table inserts
@@ -83,22 +80,83 @@ insert into offercoffee values (3, 4);
 insert into offercoffee values (3, 5);
 -- ------------------------------------------------------------------------------------------------------------------
 
---
+-- PROMOTION table inserts
+-- ------------------------------------------------------------------------------------------------------------------
+insert into promotion (name, start_date, end_date) values ('Dark Promo', '2019-07-09', '2019-08-31');
+insert into promotion (name, start_date, end_date) values ('Light Promo', '2019-08-01', '2019-08-31');
 -- ------------------------------------------------------------------------------------------------------------------
 
+-- HASPROMOTION table inserts
+-- ------------------------------------------------------------------------------------------------------------------
+insert into haspromotion values (3, 1);
+insert into haspromotion values (3, 2);
+insert into haspromotion values (1, 1);
+-- ------------------------------------------------------------------------------------------------------------------
+
+-- PROMOTEFOR table inserts
+-- ------------------------------------------------------------------------------------------------------------------
+insert into promotefor values (1, 4);
+insert into promotefor values (2, 2);
 -- ------------------------------------------------------------------------------------------------------------------
 
 -- Test inserts for view with trigger for purchases
 -- ------------------------------------------------------------------------------------------------------------------
-insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
-values (1, 3, 5, 1, 0)
-
-insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
-values (2, 3, 1, 2, 0)
-
-insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
-values (20, 1, 2, 1, 0)
-
-insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity)
-values (10, 2, 2, 1, 0)
+-- purchases
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (1, 3, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (2, 3, 1, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (20, 1, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (10, 2, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (3, 3, 5, 5, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (5, 3, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (6, 3, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (7, 1, 5, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (4, 1, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (14, 2, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (4, 2, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (20, 2, 1, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (14, 1, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (15, 3, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (13, 3, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (10, 3, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (9, 3, 6, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (8, 1, 6, 10, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (7, 3, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (20, 1, 2, 6, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (19, 1, 3, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (17, 1, 3, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (15, 3, 2, 20, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (14, 2, 1, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (3, 2, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (2, 3, 4, 30, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (2, 3, 4, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (6, 2, 4, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (7, 3, 3, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (12, 1, 1, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (13, 3, 5, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (17, 2, 5, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (3, 2, 6, 3, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (1, 3, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (13, 2, 3, 4, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (17, 3, 3, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (7, 3, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (2, 3, 2, 4, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (19, 3, 2, 10, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (18, 2, 4, 9, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (20, 1, 4, 8, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (14, 1, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (15, 3, 5, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (10, 3, 1, 4, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (3, 3, 2, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (4, 3, 3, 2, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (5, 1, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (1, 1, 5, 3, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (6, 1, 6, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (9, 3, 1, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (11, 2, 3, 5, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (16, 3, 4, 1, 0);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (16, 3, 4, 20, 0);
+-- redeems
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (8, 3, 4, 0, 1);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (2, 3, 6, 0, 1);
+insert into CustomerPurchases (customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity) values (20, 3, 3, 0, 1);
 -- ------------------------------------------------------------------------------------------------------------------
