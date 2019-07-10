@@ -2,7 +2,7 @@
 -- schema
 -- Craig Donato - crd69
 -- Sam Skupien - sss78
-
+--
 -- BoutiqueCoffee database
 
 -- drop table statements
@@ -185,7 +185,6 @@ CREATE TABLE IF NOT EXISTS PromoteFor(
 -- Primary Key - (Purchase_ID, Coffee_ID)
 -- Foreign Key - 1. Purchase_ID references PURCHASE table Purchase_ID
 --             - 2. Coffee_ID references COFFEE table Coffee_ID
--- Assumptions -
 -- ------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS BuyCoffee(
     Purchase_ID         INTEGER NOT NULL,

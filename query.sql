@@ -2,7 +2,7 @@
 -- inserts
 -- Craig Donato - crd69
 -- Sam Skupien - sss78
-
+--
 -- BoutiqueCoffee database
 
 -- STORE table inserts
