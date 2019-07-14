@@ -204,13 +204,14 @@ public class BoutiqueCoffee {
                         int addMemberLevelResult;
 
                         System.out.println("Enter Name: \n");
+                        scan.skip("\n");
                         memberLevelName = scan.nextLine();
                         System.out.println("Enter Booster Factor: \n");
                         memberBoosterFactor = scan.nextDouble();
 
-                        //addMemberLevelResult = addMemberLevel (memberLevelName, memberBoosterFactor);
+                        addMemberLevelResult = addMemberLevel (memberLevelName, memberBoosterFactor);
 
-                        //System.out.println("addMemberLevel operation result: " + addMemberLevelResult + "\n\n");
+                        System.out.println("addMemberLevel operation result: " + addMemberLevelResult + "\n\n");
                         break;
 
                     case 8: // Add customer
@@ -223,6 +224,7 @@ public class BoutiqueCoffee {
                         int addCustomerResult;
 
                         System.out.println("Enter First Name: \n");
+                        scan.skip("\n");
                         addCustomerFirstName = scan.nextLine();
                         System.out.println("Enter Last Name: \n");
                         addCustomerLastName = scan.nextLine();
@@ -233,9 +235,9 @@ public class BoutiqueCoffee {
                         System.out.println("Enter Total Points: \n");
                         addCustomerTotalPoints = scan.nextDouble();
 
-                        //addCustomerResult = addCustomer (addCustomerFirstName, addCustomerLastName, addCustomerEmail, addCustomerMemberLevelId, addCustomerTotalPoints);
+                        addCustomerResult = addCustomer (addCustomerFirstName, addCustomerLastName, addCustomerEmail, addCustomerMemberLevelId, addCustomerTotalPoints);
 
-                        //System.out.println("addCustomer operation result: " + addCustomerResult + "\n\n");
+                        System.out.println("addCustomer operation result: " + addCustomerResult + "\n\n");
                         break;
 
                     case 9: // Add Purchase
@@ -252,15 +254,16 @@ public class BoutiqueCoffee {
                         int addPurchaseResult;
 
                         System.out.println("Enter the amount of coffee's purchased: \n");
+                        scan.skip("\n");
                         numPurchases = scan.nextInt();
                         System.out.println("Enter the Redeems: \n");
                         numRedeems = scan.nextInt();
-
                         System.out.println("Enter Customer ID: \n");
                         addPurchaseCustomerId = scan.nextInt();
                         System.out.println("Enter Store ID: ");
                         addPurchaseStoreId = scan.nextInt();
                         System.out.println("Enter Purchase time: \n");
+                        scan.skip("\n");
                         strAddPurchasePurchaseTime = scan.nextLine();
                         addPurchasePurchaseTime = Date.valueOf(strAddPurchasePurchaseTime);
 
@@ -282,7 +285,7 @@ public class BoutiqueCoffee {
                         System.out.println("Enter the " + numRedeems + " Redeem Points for each coffee: ");
                         for(int i = 0; i < numRedeems; i++){
 
-                            System.out.println("Amount for " + coffeeIds.get(i) + " :\n");
+                            System.out.println("Amount for " + coffeeIds.get(i) + " (redeem points are ints) :\n");
                             int temp = scan.nextInt();
                             redeemQuantities.add(temp);
                         }
@@ -295,12 +298,12 @@ public class BoutiqueCoffee {
 
                     case 10: // get all coffee's
 
-                        //List <Integer> allCoffees = getCoffees();
+                        List <Integer> allCoffees = getCoffees();
 
-                        /*
+
                         for(int i = 0; i < allCoffees.size(); i++){
                             System.out.println("Coffee ID's: " + allCoffees.get(i) + "\n");
-                        }*/
+                        }
                         break;
 
                     case 11: // get coffee by keywords
@@ -309,18 +312,17 @@ public class BoutiqueCoffee {
                         String coffeeKeyword2;
 
                         System.out.println("Enter the first keyword: \n");
+                        scan.skip("\n");
                         coffeeKeyword1 = scan.nextLine();
                         System.out.println("Enter the Second keyword: \n");
                         coffeeKeyword2 = scan.nextLine();
 
-                        //List <Integer> coffeeKeywords = getCoffeesByKeywords (coffeeKeyword1, coffeeKeyword2);
-                        /*
+                        List <Integer> coffeeKeywords = getCoffeesByKeywords (coffeeKeyword1, coffeeKeyword2);
+
                         for(int i = 0; i < coffeeKeywords.size(); i++){
                             System.out.println("Coffee's are: " + coffeeKeywords.get(i) + "\n");
                         }
-                        break;*/
-
-
+                        break;
 
                     case 12: // get points by customer ID
 
@@ -328,11 +330,12 @@ public class BoutiqueCoffee {
                         double returnedPoints;
 
                         System.out.println("Enter Customer ID: \n");
+                        scan.skip("\n");
                         getPointsCustomerId = scan.nextInt();
 
-                        //returnedPoints = getPointsByCustomerId (getPointsCustomerId);
+                        returnedPoints = getPointsByCustomerId (getPointsCustomerId);
 
-                        //System.out.println("Customer ID: " + getPointsCustomerId + " total points are: " + returnedPoints + "\n");
+                        System.out.println("Customer ID: " + getPointsCustomerId + " total points are: " + returnedPoints + "\n");
                         break;
 
                     case 13: //
@@ -523,40 +526,158 @@ public class BoutiqueCoffee {
             return res;
         }
 
-        /*
+
         // case 7
         public int addMemberLevel (String name,double boosterFactor){
-            return 0;
+
+            int result = -1;
+            ResultSet res;
+
+            try{
+
+                Statement s = connection.createStatement();
+
+                String sqlString = "insert into memberlevel (name, booster_factor)" +
+                        "values ('" + name + "','" + boosterFactor + "');";
+
+                result = s.executeUpdate(sqlString);
+
+                if(result != -1) {
+                    // assumption: name, start date and end date is unique enough to identify promotion
+                    String sqlString2 = "select memberlevel_id from memberlevel where name = '" + name + "' and booster_factor = '"
+                                        + boosterFactor + "';";
+                    res = s.executeQuery(sqlString2);
+
+                    while(res.next()) {
+                        result = res.getInt("memberlevel_id");
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+            return result;
         }
+
 
         // case 8
-        public int addCustomer (String firstName, String lastName, String email,int memberLevelId, double totalPoints){
-            return 0;
+        public int addCustomer (String firstName, String lastName, String email, int memberLevelId, double totalPoints){
+
+            int result = -1;
+            ResultSet res;
+
+            try{
+
+                Statement s = connection.createStatement();
+
+                String sqlString = "insert into customer(first_name, last_name, email, memberlevel_id, total_points)" +
+                        "values ('" + firstName + "','" + lastName + "','" + email + "','" + memberLevelId + "','" + totalPoints + "');";
+
+                result = s.executeUpdate(sqlString);
+
+                if(result != -1) {
+                    // assumption: name, start date and end date is unique enough to identify promotion
+                    String sqlString2 = "select customer_id from customer where first_name = '" + firstName + "' and last_name = '"
+                            + lastName + "' and email = '" + email + "';";
+                    res = s.executeQuery(sqlString2);
+
+                    while(res.next()) {
+                        result = res.getInt("customer_id");
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+            return result;
         }
 
+        /*
         // case 9
         public int addPurchase (int customerId, int storeId, Date purchaseTime, List <Integer> coffeeIds, List <Integer> purchaseQuantities, List <Integer> redeemQuantities)
         {
             return 0;
-        }
+        }*/
 
         // case 10
         public List<Integer> getCoffees() {
-            ;
-        }
+
+
+            List<Integer> coffees = new ArrayList<>();
+            ResultSet res;
+
+            try {
+
+                Statement s = connection.createStatement();
+                String sql = "select coffee_id from coffee;";
+                res = s.executeQuery(sql);
+
+                while(res.next()) {
+                    int temp = res.getInt("coffee_id");
+                    coffees.add(temp);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return coffees;
+
+         }
+
 
         // case 11
         public List<Integer> getCoffeesByKeywords (String keyword1, String keyword2){
-            ;
+
+            List<Integer> coffees = new ArrayList<>();
+            ResultSet res;
+
+            try {
+
+                Statement s = connection.createStatement();
+                String sql = "select coffee_id from coffee where name ilike '%" + keyword1 + " " + keyword2 + "%';";
+                res = s.executeQuery(sql);
+
+                while(res.next()) {
+                    int temp = res.getInt("coffee_id");
+                    coffees.add(temp);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return coffees;
         }
 
 
         // case 12
         public double getPointsByCustomerId (int customerId){
-            ;
+
+            double returnVal = -1;
+            ResultSet res;
+
+            try {
+
+                Statement s = connection.createStatement();
+                String sql = "select total_points from customer where customer_id = '" + customerId + "';";
+                res = s.executeQuery(sql);
+
+                while(res.next()) {
+                    returnVal = res.getDouble("total_points");
+
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return returnVal;
         }
 
-
+        /*
         // case 13
         public List<Integer> getTopKStoresInPastXMonth (int k, int x){
             ;
