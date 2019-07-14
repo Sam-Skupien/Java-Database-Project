@@ -283,17 +283,15 @@ public class BoutiqueCoffee {
                         }
 
                         System.out.println("Enter the " + numRedeems + " Redeem Points for each coffee: ");
-                        for(int i = 0; i < numRedeems; i++){
+                        for(int i = 0; i < numPurchases; i++){
 
                             System.out.println("Amount for " + coffeeIds.get(i) + " (redeem points are ints) :\n");
                             int temp = scan.nextInt();
                             redeemQuantities.add(temp);
                         }
 
-
-                        //addPurchaseResult = addPurchase(addPurchaseCustomerId, addPurchaseStoreId, addPurchasePurchaseTime, coffeeIds, purchaseQuantities, redeemQuantities);
-                        //System.out.println("addPurchase operation result: " + addPurchaseResult + "\n\n");
-
+                        addPurchaseResult = addPurchase(addPurchaseCustomerId, addPurchaseStoreId, addPurchasePurchaseTime, coffeeIds, purchaseQuantities, redeemQuantities);
+                        System.out.println("addPurchase operation result: " + addPurchaseResult + "\n\n");
                         break;
 
                     case 10: // get all coffee's
@@ -594,12 +592,52 @@ public class BoutiqueCoffee {
             return result;
         }
 
-        /*
+
         // case 9
         public int addPurchase (int customerId, int storeId, Date purchaseTime, List <Integer> coffeeIds, List <Integer> purchaseQuantities, List <Integer> redeemQuantities)
         {
-            return 0;
-        }*/
+
+            int result = -1;
+            ResultSet res;
+
+            try{
+
+                Statement s = connection.createStatement();
+
+                for(int i = 0; i < coffeeIds.size(); i++) {
+
+                    String sqlString = "insert into CustomerPurchases(customer_id, store_id, coffee_id, purchase_quantity, redeem_quantity, purchase_time)" +
+                            "values ('" + customerId + "','"
+                                        + storeId + "','"
+                                        + coffeeIds.get(i) + "','"
+                                        + purchaseQuantities.get(i) + "','"
+                                        + redeemQuantities.get(i) + "','"
+                                        + purchaseTime + "');";
+
+                    result = s.executeUpdate(sqlString);
+
+                    if (result != -1) {
+
+                        // assumption: name,
+                        String sqlString2 = "select purchase_id from CustomerPurchases where customer_id = '" + customerId + "' and store_id = '"
+                                + storeId + "' and coffee_id = '" + coffeeIds.get(i) + "' and purchase_quantity = '" + purchaseQuantities.get(i) + "'" +
+                                " and redeem_quantity = '" + redeemQuantities.get(i) + "';";
+                        res = s.executeQuery(sqlString2);
+
+                        while (res.next()) {
+                            result = res.getInt("purchase_id");
+                        }
+                    }
+
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+            return result;
+
+        }
 
         // case 10
         public List<Integer> getCoffees() {
