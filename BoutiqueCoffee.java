@@ -26,6 +26,7 @@ public class BoutiqueCoffee {
         } catch (SQLException e) {
             System.out.println("Failure to Connect.\n");
             e.printStackTrace();
+            System.exit(0);
         }
 
         BoutiqueCoffee db = new BoutiqueCoffee();
