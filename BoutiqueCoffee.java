@@ -1,3 +1,8 @@
+// Project phase 3
+// BoutiqueCoffee
+// Craig Donato - crd69
+// Sam Skupien - sss78
+
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.Date;
@@ -6,39 +11,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat; 
 import java.util.*;
 
 public class BoutiqueCoffee {
+	
 
-    private static Connection connection;
+    private Connection connection;
     private Statement statement;
 
-
-    public static void main(String[] args) throws SQLException {
-
-
-        try  {
-
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
-            System.out.println("Connected to Boutiqe Coffee Database.\n");
-            BoutiqueCoffee db = new BoutiqueCoffee();
-
-        } catch (SQLException e) {
-            System.out.println("Failure to Connect.\n");
-            e.printStackTrace();
-            System.exit(0);
-        }
-
-        BoutiqueCoffee db = new BoutiqueCoffee();
-    }
-
+	
+	public BoutiqueCoffee(Connection link) throws SQLException{
+		this.connection = link;
+	}
 
     public BoutiqueCoffee(){
-        System.out.println("Boutiqe Coffee Database Running...\n");
+        System.out.println("Boutique Coffee Database Running...\n");
         runOps();
     }
 
-    private void runOps() {
+    public void runOps() {
 
         Scanner scan = new Scanner(System.in);
         int userOp = 0;
@@ -59,7 +51,7 @@ public class BoutiqueCoffee {
                     "12: Get points by customer ID\n" +
                     "13: Get top stores with the highest revenue in last x months\n" +
                     "14: Get top K customers\n" +
-                    "15: Exit\n");
+					"15: Exit\n");
 
             userOp = scan.nextInt();
 
@@ -791,7 +783,7 @@ public class BoutiqueCoffee {
 
             Statement s = connection.createStatement();
 
-            String sql = "select c.customer_id, b.purchase_quantity, p.purchase_time"
+            String sql = "select c.customer_id, sum(b.purchase_quantity) as purchase_quantity"
                         + " from customer c, BuyCoffee b, purchase p"
                         + " where c.Customer_ID = p.Customer_ID"
                         + " and p.Purchase_ID = b.Purchase_ID"
@@ -802,7 +794,7 @@ public class BoutiqueCoffee {
             res = s.executeQuery(sql);
 
             while(res.next()) {
-                int temp = res.getInt("store_id");
+                int temp = res.getInt("customer_id");
                 customers.add(temp);
             }
 
