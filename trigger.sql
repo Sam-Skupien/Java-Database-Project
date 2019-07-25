@@ -24,7 +24,7 @@ drop view if exists CustomerPurchases;
 -- ------------------------------------------------------------------------------------------------------------------
 create or replace view CustomerPurchases as
 select p.purchase_id, p.customer_id, c.first_name, c.last_name, p.store_id, s.name as store_name, b.coffee_id,
-       o.name as coffee_name, b.purchase_quantity, b.redeem_quantity
+       o.name as coffee_name, b.purchase_quantity, b.redeem_quantity, p.purchase_time
 from purchase p, buycoffee b, customer c, coffee o, store s
 where p.purchase_id = b.purchase_id
     and p.customer_id = c.customer_id
