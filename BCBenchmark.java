@@ -2,6 +2,7 @@
 // Benchmark
 // Craig Donato - crd69
 // Sam Skupien - sss78
+//------------------------------------------------------------------------------------
 
 import java.sql.*;
 import java.sql.Connection;
