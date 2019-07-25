@@ -358,7 +358,7 @@ public class BoutiqueCoffee {
                     System.out.println("Enter months: ");
                     custMonths = scan.nextInt();
 
-                    List<Integer> customers = getTopKStoresInPastXMonth(topCust, custMonths);
+                    List<Integer> customers = getTopKCustomersInPastXMonth(topCust, custMonths);
 
                     for(int i = 0; i < customers.size(); i++){
                         System.out.println("Top customers: " + customers.get(i) + "\n");
@@ -750,11 +750,12 @@ public class BoutiqueCoffee {
 
             Statement s = connection.createStatement();
 
-            String sql = "select s.store_id, b.purchase_quantity, p.purchase_time"
+            String sql = "select s.store_id, sum(b.purchase_quantity) as purchase_quantity"
             + " from store s, BuyCoffee b, purchase p"
             + " where s.store_id = p.store_id"
             + " and p.Purchase_ID = b.Purchase_ID"
             + " and p.purchase_time > now() - interval '" + x + " months'"
+			+ " group by s.store_id"
             + " order by Purchase_Quantity desc"
             + " fetch first " + k + " rows only;";
 
@@ -783,11 +784,12 @@ public class BoutiqueCoffee {
 
             Statement s = connection.createStatement();
 
-            String sql = "select c.customer_id, sum(b.purchase_quantity) as purchase_quantity"
+            String sql = "select Distinct c.customer_id, sum(b.purchase_quantity) as purchase_quantity"
                         + " from customer c, BuyCoffee b, purchase p"
                         + " where c.Customer_ID = p.Customer_ID"
                         + " and p.Purchase_ID = b.Purchase_ID"
                         + " and p.purchase_time > now() - interval '" + x + "months'"
+						+ " group by c.customer_id"
                         + " order by Purchase_Quantity desc"
                         + " fetch first " + k + " rows only;";
 
