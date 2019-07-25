@@ -51,13 +51,13 @@ insert into Customer (first_name, last_name, email, memberlevel_id) values ('Jac
 -- COFFEE table inserts
 -- ------------------------------------------------------------------------------------------------------------------
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
-values ('Espresso', 'Full flavor', 9, 2.80, 10, 250);
+values ('Coffee Espresso', 'Full flavor', 9, 2.80, 10, 250);
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
-values ('Light', 'Weak flavor', 2, 1.50, 5, 100);
+values ('Coffee Light', 'Weak flavor', 2, 1.50, 5, 100);
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
-values ('Medium', 'full flavor', 5, 2.00, 5, 100);
+values ('Coffee Medium', 'full flavor', 5, 2.00, 5, 100);
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
-values ('Dark', 'bold flavor', 8, 2.00, 5, 100);
+values ('Coffee Dark', 'bold flavor', 8, 2.00, 5, 100);
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
 values ('Green Tea', 'Light and earthy', 1, 1.80, 10, 150);
 insert into coffee (name, description, intensity, price, reward_points, redeem_points)
